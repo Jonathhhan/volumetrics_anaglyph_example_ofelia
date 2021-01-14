@@ -4,7 +4,6 @@
 #include "g_canvas.h"
 #include "lua.hpp"
 #include "ofMain.h"
-#include "ofParameter.h"
 #include "ofxOfeliaLua.h"
 #include "ofxVolumetrics.h"
 #include "ofxImageSequencePlayer.h"
