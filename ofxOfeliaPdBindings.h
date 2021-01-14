@@ -1213,6 +1213,16 @@ public:
         cameraAnaglyph.orbitDeg(x, y, z);
     }
 
+    void beginCamera()
+    {
+        cameraAnaglyph.begin();
+    }
+
+    void endCamera()
+    {
+        cameraAnaglyph.end();
+    }
+
 private:
     ofxCameraAnaglyph cameraAnaglyph;
 };

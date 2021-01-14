@@ -1,4 +1,4 @@
-#N canvas 1359 130 543 305 10;
+#N canvas 1351 132 543 305 10;
 #X obj 16 15 cnv 15 500 270 empty empty empty 20 12 0 14 -257985 -66577
 0;
 #X obj 41 25 cnv 15 450 250 empty empty Volumetrics_Anaglyph 40 50
@@ -10,25 +10,25 @@ jonathan frank 2021;
 #X obj 71 165 ofelia d -k \$0-volumetrics;
 #A __set if type(window) ~= "userdata" then \; window = ofWindow()
 \; end \; \; local a = ofelia \; local canvas = ofCanvas(this) \; local
-clock = ofClock(this \, "setup") \; local cam = ofEasyCam() \; local
-dataDir = canvas:getDir() .. "/volumes/head/cthead-8bit" \; local pix
-= ofPixels() \; local volumetrics = ofVolumetrics() \; local imageSequence
-= ofImageSequencePlayer() \; local volWidth \, volHeight \, volDepth
-= 0 \, 0 \, 0 \; local cam3d = ofCameraAnaglyph() \; \; function a.new()
-\; ofWindow.addListener("setup" \, this) \; ofWindow.addListener("update"
-\, this) \; ofWindow.addListener("draw" \, this) \; ofWindow.addListener("exit"
+clock = ofClock(this \, "setup") \; local dataDir = canvas:getDir()
+.. "/volumes/head/cthead-8bit" \; local pix = ofPixels() \; local volumetrics
+= ofVolumetrics() \; local imageSequence = ofImageSequencePlayer()
+\; local volWidth \, volHeight \, volDepth = 0 \, 0 \, 0 \; local cam3d
+= ofCameraAnaglyph() \; \; function a.new() \; ofWindow.addListener("setup"
+\, this) \; ofWindow.addListener("update" \, this) \; ofWindow.addListener("draw"
+\, this) \; ofWindow.addListener("keyPressed" \, this) \; ofWindow.addListener("exit"
 \, this) \; window:setPosition(30 \, 100) \; window:setSize(1200 \,
 800) \; if ofWindow.exists then \; clock:delay(0) \; else \; window:create()
 \; end \; end \; \; function a.free() \; window:destroy() \; ofWindow.removeListener("setup"
 \, this) \; ofWindow.removeListener("update" \, this) \; ofWindow.removeListener("draw"
-\, this) \; ofWindow.removeListener("exit" \, this) \; end \; \; function
-a.setup() \; ofSetWindowTitle("Volu") \; ofBackground(0) \; ofEnableBlendMode(OF_BLENDMODE_ALPHA)
-\; cam3d:enableStereo() \; end \; \; function a.update() \; if ofelia.upload
-== 1 then \; imageSequence:init(dataDir \, 3 \, ".png" \, 1) \; volWidth
-= imageSequence:getWidth() \; volHeight = imageSequence:getHeight()
-\; volDepth = imageSequence:getSequenceLength() \; print("volWidth:"
-\, volWidth \, "volHeight:" \, volHeight \, "volDepth:" \, volDepth
-\, "size:" \, volWidth * volHeight * volDepth * 4) \; volumetrics:setup(volWidth
+\, this) \; ofWindow.removeListener("keyPressed" \, this) \; ofWindow.removeListener("exit"
+\, this) \; end \; \; function a.setup() \; ofSetWindowTitle("Volumetrics")
+\; ofBackground(0) \; ofEnableBlendMode(OF_BLENDMODE_ALPHA) \; --cam3d:enableStereo()
+\; end \; \; function a.update() \; if ofelia.upload == 1 then \; imageSequence:init(dataDir
+\, 3 \, ".png" \, 1) \; volWidth = imageSequence:getWidth() \; volHeight
+= imageSequence:getHeight() \; volDepth = imageSequence:getSequenceLength()
+\; print("volWidth:" \, volWidth \, "volHeight:" \, volHeight \, "volDepth:"
+\, volDepth \, "size:" \, volWidth * volHeight * volDepth * 4) \; volumetrics:setup(volWidth
 \, volHeight \, volDepth \, ofVec3f(1 \, 1 \, 2) \, true) \; volumetrics:setRenderSettings(1.0
 \, 1 \, 0.75 \, 0.1) \; for z = 0 \, volDepth -1 do \; imageSequence:loadFrame(z)
 \; pix = imageSequence:getPixels() \; pix:setImageType(OF_IMAGE_COLOR_ALPHA)
@@ -36,12 +36,17 @@ a.setup() \; ofSetWindowTitle("Volu") \; ofBackground(0) \; ofEnableBlendMode(OF
 \, volWidth \, volHeight \, 1 \, 0 \, 0 \, z) \; end \; ofelia.upload
 = 0 \; end \; cam3d:eyeSeparation(ofelia.setEyeSeparation) \; cam3d:focalLength(ofelia.setFocalLength)
 \; end \; \; function a.draw() \; if volumetrics:isInitialized() ==
-true then \; cam3d:beginLeft() \; ofDrawGrid() \; ofRotateXDeg(270)
-\; volumetrics:drawVolume(0 \, 0 \, 0 \, ofGetHeight()/2 \, 0) \; cam3d:beginRight()
-\; ofDrawGrid() \; ofRotateXDeg(270) \; volumetrics:drawVolume(0 \,
-0 \, 0 \, ofGetHeight()/2 \, 0) \; cam3d:endStereo() \; end \; end
-\; \; function a.exit() \; volumetrics:destroy() \; pix:clear() \;
-end \; \;;
+true then \; if cam3d:isStereo() == true then \; cam3d:beginLeft()
+\; else \; cam3d:beginCamera() \; end \; ofDrawGrid() \; ofRotateXDeg(270)
+\; volumetrics:drawVolume(0 \, 0 \, 0 \, ofGetHeight()/2 \, 0) \; if
+cam3d:isStereo() == true then \; cam3d:beginRight() \; ofDrawGrid()
+\; ofRotateXDeg(270) \; volumetrics:drawVolume(0 \, 0 \, 0 \, ofGetHeight()/2
+\, 0) \; end \; if cam3d:isStereo() == true then \; cam3d:endStereo()
+\; else \; cam3d:endCamera() \; end \; end \; end \; \; function a.keyPressed(e)
+\; if e.key == string.byte(" ") then \; if cam3d:isStereo() == true
+then \; cam3d:disableStereo() \; else \; cam3d:enableStereo() \; end
+\; end \; end \; \; function a.exit() \; volumetrics:destroy() \; pix:clear()
+\; end \; \;;
 #X obj 241 123 nbx 5 14 -1e+37 1e+37 0 1 empty empty empty 0 -8 0 10
 -257985 -1 -1 0.5 256;
 #X obj 372 123 nbx 5 14 -1e+37 1e+37 0 1 empty empty empty 0 -8 0 10
