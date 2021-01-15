@@ -4,6 +4,7 @@
 #include "g_canvas.h"
 #include "lua.hpp"
 #include "ofMain.h"
+#include "ofParameter.h"
 #include "ofxOfeliaLua.h"
 #include "ofxVolumetrics.h"
 #include "ofxImageSequencePlayer.h"
@@ -1220,6 +1221,11 @@ public:
     void endCamera()
     {
         cameraAnaglyph.end();
+    }
+
+    void setVFlip(bool x)
+    {
+        cameraAnaglyph.setVFlip(x);
     }
 
 private:
